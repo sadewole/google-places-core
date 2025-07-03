@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "ES2017", 
+    "module": "ESNext", 
+    "lib": ["ESNext", "DOM"], // Include DOM types if you use browser APIs (like fetch)
+    "declaration": true, 
+    "declarationDir": "./dist/types", 
+    "outDir": "./dist/esm",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true, 
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules", "dist"] // Exclude these directories
+}

@@ -1,0 +1,62 @@
+{
+  "name": "@samador/google-places-core",
+  "version": "1.0.0",
+  "description": "A lightweight Google Places API logic library.",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "google maps",
+    "places",
+    "autocomplete",
+    "framework-agnostic",
+    "react",
+    "vue",
+    "typescript"
+  ],
+  "author": "Samador <samueladewole15@gmail.com> (https://github.com/sadewole)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sadewole/google-places-core.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sadewole/google-places-core.git/issues"
+  },
+  "homepage": "https://github.com/sadewole/google-places-core.git#readme",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-typescript": "^11.1.6",
+    "rollup": "^4.18.0",
+    "rollup-plugin-dts": "^6.1.1",
+    "typescript": "^5.5.3"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
+  }
+}
