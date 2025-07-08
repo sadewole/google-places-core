@@ -1,6 +1,6 @@
 import { GooglePlacesManager, GooglePlacesManagerState } from './core/googlePlacesManager';
 import { GooglePlacesWebService } from './services/googleMapWeb.service';
-import { GooglePlacesNativeService } from './services/GoogleMapNative.service';
+import { GooglePlacesNativeService } from './services/googleMapNative.service';
 
 function createGooglePlacesManager(
   apiKey: string,
