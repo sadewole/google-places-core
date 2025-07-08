@@ -1,12 +1,13 @@
+import { GooglePlacesService } from '../core/googlePlacesService';
 import { GooglePlaceDetailsT, GooglePlacePredictionT } from '../types';
 
-class GoogleMapService {
+// Here, we can use the HTTP API for the native implementation
+class GooglePlacesNativeService implements GooglePlacesService {
   private API_KEY: string;
 
   constructor(apiKey: string) {
-    if (!apiKey) {
-      throw new Error("GoogleMapService: API Key must be provided.");
-    }
+    if (!apiKey) throw new Error('GoogleMapService: API Key must be provided.');
+
     this.API_KEY = apiKey;
   }
 
@@ -45,4 +46,4 @@ class GoogleMapService {
   };
 }
 
-export { GoogleMapService };
+export { GooglePlacesNativeService };

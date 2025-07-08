@@ -1,6 +1,6 @@
 # google-places-core
 
-A lightweight, framework-agnostic JavaScript/TypeScript library for interacting with the Google Places API (Autocomplete and Place Details). It provides core logic and state management, letting you build your UI in any framework.
+A lightweight, framework-agnostic JavaScript/TypeScript library for interacting with the Google Places API (Autocomplete and Place Details). Supports both web browsers and React Native environments.
 
 ## Installation
 ```
@@ -10,30 +10,43 @@ yarn add google-places-core
 ```
 
 ## Usage
-You need a Google Maps API Key with the *"Places API"* enabled. Provide this key when initializing GooglePlacesManager.
+You need a Google Maps API Key with the *"Places API"* enabled.
 
+#### Web setup
 ```
-// <root-example>/googlePlacesSetup.ts
+// googlePlacesSetup.ts
+import { createGooglePlacesManager } from 'google-places-core';
 
-import { GooglePlacesManager } from 'google-places-core';
-
-const GOOGLE_MAPS_API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-export const googlePlacesManager = new GooglePlacesManager(GOOGLE_MAPS_API_KEY);
+const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY";
+export const googlePlacesManager = createGooglePlacesManager(GOOGLE_MAPS_API_KEY, 'web');
 ```
 
-#### React Integration
-Create a custom hook to integrate with React's state and lifecycle.
+#### React Native Setup
+```
+// googlePlacesSetup.ts
+import { createGooglePlacesManager } from 'google-places-core';
+
+const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY";
+export const googlePlacesManager = createGooglePlacesManager(GOOGLE_MAPS_API_KEY, 'native');
+```
+
+
+### Frame integration
+#### React hook (Web & Native)
 ```
 import { useEffect, useState, useCallback } from 'react';
-import { googlePlacesManager } from '../googlePlacesSetup'; // Your manager instance
-import { GooglePlacePredictionT, GooglePlaceDetailsT } from 'google-places-core';
+import { googlePlacesManager } from '../googlePlacesSetup';
 
 const useGooglePlaces = () => {
   const [state, setState] = useState(googlePlacesManager.getState());
 
   useEffect(() => {
     const unsubscribe = googlePlacesManager.subscribe(setState);
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      // Call destroy() if component unmounts
+      googlePlacesManager.destroy();
+    };
   }, []);
 
   const updateSearchInput = useCallback((input: string) => {
@@ -47,54 +60,40 @@ const useGooglePlaces = () => {
   return { ...state, updateSearchInput, getPlaceDetails };
 };
 
-export default useGooglePlaces;
-
 ...//
 const { predictions, isLoading, error, updateSearchInput, getPlaceDetails } = useGooglePlaces();
 ```
 
-#### Vue Integration
-Create a composable function to integrate with Vue's reactivity system.
+#### Vue composable (Web only)
 ```
 import { ref, onMounted, onUnmounted } from 'vue';
-import { googlePlacesManager } from '../googlePlacesSetup'; // Your manager instance
-import { GooglePlacePredictionT, GooglePlaceDetailsT } from 'google-places-core';
+import { googlePlacesManager } from '../googlePlacesSetup';
 
 export function useGooglePlaces() {
-  const predictions = ref<GooglePlacePredictionT[]>([]);
-  const isLoading = ref(false);
-  const error = ref<Error | null>(null);
+  const state = ref(googlePlacesManager.getState());
 
-  const updateState = (newState: any) => {
-    predictions.value = newState.predictions;
-    isLoading.value = newState.isLoading;
-    error.value = newState.error;
+  const updateState = (newState) => {
+    state.value = newState;
   };
-
-  let unsubscribe: (() => void) | undefined;
 
   onMounted(() => {
-    updateState(googlePlacesManager.getState()); // Initial sync
-    unsubscribe = googlePlacesManager.subscribe(updateState);
+    const unsubscribe = googlePlacesManager.subscribe(updateState);
+    onUnmounted(() => {
+      unsubscribe();
+      googlePlacesManager.destroy();
+    });
   });
 
-  onUnmounted(() => {
-    unsubscribe?.();
-  });
-
-  const updateSearchInput = (input: string) => {
-    googlePlacesManager.updateSearchInput(input);
+  return {
+    state,
+    updateSearchInput: googlePlacesManager.updateSearchInput,
+    getPlaceDetails: googlePlacesManager.getPlaceDetails
   };
-
-  const getPlaceDetails = async (placeId: string): Promise<GooglePlaceDetailsT> => {
-    return googlePlacesManager.getPlaceDetails(placeId);
-  };
-
-  return { predictions, isLoading, error, updateSearchInput, getPlaceDetails };
 }
 ```
 
 ## API Reference
+- `createGooglePlacesManager(apiKey: string, platform?: 'web' | 'native')` ::-> Creates a manager instance for the specified platform.
 - `GoogleMapService`: Class for direct Google Places API calls (`fetchPredictions(input: string): Promise<GooglePlacePredictionT[]>`, `fetchPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT>`).
 
 - `GooglePlacesManager`: Class that manages search state, debouncing, and provides methods:
@@ -102,9 +101,21 @@ export function useGooglePlaces() {
   - `getPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT>`
   - `subscribe(callback: (state: GooglePlacesManagerState) => void): () => void` (Returns an unsubscribe function)
   - `getState(): GooglePlacesManagerState` (Returns the current state object)
-  - destroy(): void
+  - `destroy(): void`
 
 - Types: `GooglePlacePredictionT`, `GooglePlaceDetailsT`, `GooglePlacesManagerState`.
+
+
+### Platform-Specific Notes
+#### Web
+- Automatically loads Google Maps JavaScript API
+- Uses Places Autocomplete service
+- Requires browser environment
+
+#### React Native
+- Uses direct HTTP requests to Places API
+- No external script dependencies
+- Works in mobile environments
 
 ### Contributing
 

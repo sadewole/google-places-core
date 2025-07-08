@@ -1,4 +1,4 @@
-import { GoogleMapService } from '../services/googleMap.service';
+import { GooglePlacesService } from './googlePlacesService';
 import { GooglePlaceDetailsT, GooglePlacePredictionT } from '../types';
 import { debounce } from '../utils/debounce';
 
@@ -15,16 +15,12 @@ class GooglePlacesManager {
     error: null,
   };
   private subscribers: Set<(state: GooglePlacesManagerState) => void> = new Set();
-  private googleMapService: GoogleMapService;
+  private placesService: GooglePlacesService;
   private debouncedGetPredictions: ((input: string) => void) & { cancel: () => void };
 
-  constructor(apiKey: string | GoogleMapService) {
-    if (typeof apiKey === 'string') {
-      this.googleMapService = new GoogleMapService(apiKey);
-    } else {
-      this.googleMapService = apiKey;
-    }
-    this.debouncedGetPredictions = debounce(this.fetchPredictionsInternal, 300);
+  constructor(service: GooglePlacesService, debounceTime: number = 300) {
+    this.placesService = service;
+    this.debouncedGetPredictions = debounce(this.fetchPredictionsInternal, debounceTime);
   }
 
   private setState(newState: Partial<GooglePlacesManagerState>) {
@@ -40,7 +36,7 @@ class GooglePlacesManager {
 
     this.setState({ isLoading: true, error: null });
     try {
-      const predictions = await this.googleMapService.fetchPredictions(input);
+      const predictions = await this.placesService.fetchPredictions(input);
       this.setState({ predictions, isLoading: false });
     } catch (error: any) {
       console.error('Error fetching predictions:', error);
@@ -54,7 +50,7 @@ class GooglePlacesManager {
 
   public async getPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT> {
     try {
-      return await this.googleMapService.fetchPlaceDetails(placeId);
+      return await this.placesService.fetchPlaceDetails(placeId);
     } catch (error: any) {
       console.error('Error fetching place details:', error);
       this.setState({ error });
@@ -64,6 +60,7 @@ class GooglePlacesManager {
 
   public subscribe(callback: (state: GooglePlacesManagerState) => void): () => void {
     this.subscribers.add(callback);
+    callback(this.state);
     return () => {
       this.subscribers.delete(callback);
     };
