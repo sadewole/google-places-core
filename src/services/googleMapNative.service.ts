@@ -32,7 +32,7 @@ class GooglePlacesNativeService implements GooglePlacesService {
 
   fetchPlaceDetails = async (placeId: string): Promise<GooglePlaceDetailsT> => {
     const response = await fetch(
-      `https.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry,formatted_address&key=${this.API_KEY}`,
+      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry,formatted_address&key=${this.API_KEY}`,
     );
 
     if (!response.ok) {
