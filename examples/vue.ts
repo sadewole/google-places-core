@@ -2,7 +2,7 @@
 // import { GooglePlacesManager } from 'google-places-core';
 
 // export const useGooglePlaces = (apiKey: string) => {
-//   const manager = createGooglePlacesManager(apiKey, 'web')
+//   const manager = createGooglePlacesManager(apiKey, 'web', { country: ['ng'] });
 //   const state = ref(manager.getState());
 
 //   const unsubscribe = manager.subscribe((newState) => {

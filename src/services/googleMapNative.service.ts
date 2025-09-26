@@ -4,11 +4,13 @@ import { GooglePlaceDetailsT, GooglePlacePredictionT } from '../types';
 // Here, we can use the HTTP API for the native implementation
 class GooglePlacesNativeService implements GooglePlacesService {
   private API_KEY: string;
+  private countryRestrictions: string[] | undefined;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, countryRestrictions?: string[]) {
     if (!apiKey) throw new Error('GoogleMapService: API Key must be provided.');
 
     this.API_KEY = apiKey;
+    this.countryRestrictions = countryRestrictions;
   }
 
   fetchPredictions = async (
@@ -17,7 +19,7 @@ class GooglePlacesNativeService implements GooglePlacesService {
     const response = await fetch(
       `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
         input,
-      )}&language=en&key=${this.API_KEY}`,
+      )}&language=en&key=${this.API_KEY}&components=${this.countryRestrictions ? this.countryRestrictions.map(c => `country:${c}`).join('|') : ''}`,
     );
 
     if (!response.ok) {

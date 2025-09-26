@@ -2,7 +2,7 @@
 // import { GooglePlacesManager } from 'google-places-core';
 
 // export const useGooglePlaces = (apiKey: string) => {
-//   const [manager] = useState(() => createGooglePlacesManager(apiKey, 'web', { debounceTime: 400 }));
+//   const [manager] = useState(() => createGooglePlacesManager(apiKey, 'web', { debounceTime: 400, country: ['us'] }));
 //   const [state, setState] = useState(manager.getState());
 
 //   useEffect(() => {

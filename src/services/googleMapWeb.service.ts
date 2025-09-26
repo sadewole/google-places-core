@@ -7,12 +7,14 @@ class GooglePlacesWebService extends Helpers implements GooglePlacesService {
   private placesService: any;
   private readonly isBrowser: boolean;
   private loadPromise: Promise<void> | null = null;
+  private countryRestrictions: string[] | undefined;
 
-  constructor(apiKey: string) {
+  constructor(apiKey: string, countryRestrictions?: string[]) {
     if (!apiKey) throw new Error('GoogleMapService: API Key must be provided.');
 
     super(apiKey)
     this.isBrowser = this.checkBrowserEnvironment();
+    this.countryRestrictions = countryRestrictions;
   }
 
   // Public API Methods
@@ -47,7 +49,7 @@ class GooglePlacesWebService extends Helpers implements GooglePlacesService {
   private getPredictions(input: string): Promise<GooglePlacePredictionT[]> {
     return new Promise((resolve, reject) => {
       this.autocompleteService.getPlacePredictions(
-        { input },
+        { input, componentRestrictions: this.countryRestrictions ? { country: this.countryRestrictions } : undefined },
         (predictions: GooglePlacePredictionT[], status: string) => {
           status === window.google!.maps.places.PlacesServiceStatus.OK
             ? resolve(this.transformPredictions(predictions || []))

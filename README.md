@@ -93,7 +93,7 @@ export function useGooglePlaces() {
 ```
 
 ## API Reference
-- `createGooglePlacesManager(apiKey: string, platform?: 'web' | 'native')` ::-> Creates a manager instance for the specified platform.
+- `createGooglePlacesManager(apiKey: string, platform?: 'web' | 'native', options?: { debounceTime?: number, country?: string[] })` ::-> Creates a manager instance for the specified platform.
 - `GoogleMapService`: Class for direct Google Places API calls (`fetchPredictions(input: string): Promise<GooglePlacePredictionT[]>`, `fetchPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT>`).
 
 - `GooglePlacesManager`: Class that manages search state, debouncing, and provides methods:
