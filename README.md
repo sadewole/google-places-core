@@ -1,6 +1,22 @@
 # google-places-core
 
-A lightweight, framework-agnostic JavaScript/TypeScript library for interacting with the Google Places API (Autocomplete and Place Details). Supports both web browsers and React Native environments.
+A lightweight, platform-agnostic JavaScript/TypeScript library for interacting with the Google Places API (Autocomplete and Place Details). Works flawlessly across **Web browsers** and **React Native** environments with automatic platform detection and optimized implementations.
+
+[![npm version](https://img.shields.io/npm/v/google-places-core.svg)](https://www.npmjs.com/package/google-places-core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue)](https://www.typescriptlang.org/)
+
+
+## ✨ Features
+
+- **🌍 Cross-Platform** - Single API for web and native (React Native) environments
+- **🤖 Auto Platform Detection** - Automatically uses optimal implementation for your environment
+- **📦 Zero Configuration** - Just add your API key and start fetching places
+- **⚡ Intelligent Debounce** - Built-in debounce for better performance
+- **🎯 TypeScript First** - Full type safety with comprehensive TypeScript definitions
+- **🔄 Framework Agnostic** - Works with React, Vue, Angular, Svelte, or plain JavaScript
+- **🔒 Secure** - No API key exposure in client-side bundles
+- **📱 React Native Ready** - No additional setup required
 
 ## Installation
 ```
@@ -12,22 +28,20 @@ yarn add google-places-core
 ## Usage
 You need a Google Maps API Key with the *"Places API"* enabled.
 
-#### Web setup
+#### setup
 ```
 // googlePlacesSetup.ts
 import { createGooglePlacesManager } from 'google-places-core';
 
 const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY";
-export const googlePlacesManager = createGooglePlacesManager(GOOGLE_MAPS_API_KEY, 'web');
-```
+export const googlePlacesManager = createGooglePlacesManager(GOOGLE_MAPS_API_KEY);
 
-#### React Native Setup
-```
-// googlePlacesSetup.ts
-import { createGooglePlacesManager } from 'google-places-core';
+-- or --
 
-const GOOGLE_MAPS_API_KEY = "YOUR_API_KEY";
-export const googlePlacesManager = createGooglePlacesManager(GOOGLE_MAPS_API_KEY, 'native');
+const googlePlacesManager = createGooglePlacesService(YOUR_GOOGLE_MAPS_API_KEY, {
+  countryRestrictions: ['US'], // Optional: restrict to specific countries
+  languageCode: 'en', // Optional: default is 'en'
+});
 ```
 
 
@@ -92,8 +106,29 @@ export function useGooglePlaces() {
 }
 ```
 
+#### 🔧 Advanced Configuration
+
+```
+import { createGooglePlacesManager } from 'google-places-core';
+
+const placesManager = createGooglePlacesManager(YOUR_API_KEY, {  
+  debounceTime: 3000, // debounce timer
+  countryRestrictions: ['US', 'CA'], // Restrict to specific countries
+  languageCode: 'es', // Spanish results
+  
+  // Location bias for more relevant results
+  locationBias: {
+    center: { latitude: 40.7128, longitude: -74.0060 }, // New York
+    radius: 50000, // 50km radius
+  },
+  
+  // Logging
+  enableLogging: process.env.NODE_ENV === 'development',
+});
+```
+
 ## API Reference
-- `createGooglePlacesManager(apiKey: string, platform?: 'web' | 'native', options?: { debounceTime?: number, country?: string[] })` ::-> Creates a manager instance for the specified platform.
+- `createGooglePlacesManager(apiKey: string, options?: { debounceTime?: number, countryRestrictions?: string[] })` ::-> Creates a manager instance for the specified platform.
 - `GoogleMapService`: Class for direct Google Places API calls (`fetchPredictions(input: string): Promise<GooglePlacePredictionT[]>`, `fetchPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT>`).
 
 - `GooglePlacesManager`: Class that manages search state, debouncing, and provides methods:
@@ -116,6 +151,17 @@ export function useGooglePlaces() {
 - Uses direct HTTP requests to Places API
 - No external script dependencies
 - Works in mobile environments
+
+### 🛣️ Migration from <=v1.1.0
+```
+import { createGooglePlacesManager } from 'google-places-core';
+
+// Old way (deprecated)
+const service = createGooglePlacesManager(YOUR_KEY, *platform*, { country: ['NG'] });
+
+// New way
+const service = createGooglePlacesManager(YOUR_KEY, { countryRestrictions: [NG] });
+```
 
 ### Contributing
 

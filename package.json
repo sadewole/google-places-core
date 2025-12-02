@@ -1,6 +1,6 @@
 {
   "name": "google-places-core",
-  "version": "1.0.4",
+  "version": "1.1.2",
   "description": "A lightweight Google Places API logic library.",
   "main": "dist/cjs/index.js",
   "type": "module",
@@ -39,10 +39,11 @@
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@types/google.maps": "^3.58.1",
     "rollup": "^4.18.0",
     "rollup-plugin-dts": "^6.1.1",
-    "typescript": "^5.5.3",
-    "tslib": "^2.6.3"
+    "tslib": "^2.6.3",
+    "typescript": "^5.5.3"
   },
   "release-it": {
     "git": {

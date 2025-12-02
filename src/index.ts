@@ -1,22 +1,28 @@
-import { GooglePlacesManager, GooglePlacesManagerState } from './core/googlePlacesManager';
-import { GooglePlacesWebService } from './services/googleMapWeb.service';
-import { GooglePlacesNativeService } from './services/googleMapNative.service';
+import {
+  GooglePlacesManager,
+  GooglePlacesManagerState,
+} from './core/googlePlacesManager';
+import { GooglePlacesService } from './core/googlePlacesService';
 
-function createGooglePlacesManager(
+export function createGooglePlacesManager(
   apiKey: string,
-  platform: 'web' | 'native' = 'web',
-  options?: { debounceTime?: number, country?: string[] },
+  options?: {
+    debounceTime?: number;
+    countryRestrictions?: string[];
+    locationBias?: {
+      center: { latitude: number; longitude: number };
+      radius: number;
+    };
+    languageCode?: string;
+    enableLogging?: boolean;
+  }
 ): GooglePlacesManager {
-  const service = platform === 'web'
-    ? new GooglePlacesWebService(apiKey, options?.country)
-    : new GooglePlacesNativeService(apiKey, options?.country);
-    
-  return new GooglePlacesManager(service, options?.debounceTime);
+  const { debounceTime, ...config } = options || {};
+  const service = new GooglePlacesService({ ...config, apiKey });
+
+  return new GooglePlacesManager(service, debounceTime);
 }
 
-export * from './types';
+export type { GooglePlaceDetailsT, GooglePlacePredictionT } from './types';
 
-export {  createGooglePlacesManager,
-  GooglePlacesManager,
-  GooglePlacesWebService,
-  GooglePlacesNativeService, GooglePlacesManagerState}
+export { GooglePlacesService, GooglePlacesManager, GooglePlacesManagerState };

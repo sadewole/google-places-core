@@ -10,7 +10,9 @@ export class Helpers {
   }
 
   isLoaded(): boolean {
-    return !!window.google?.maps?.places;
+    return typeof window !== 'undefined' && 
+           typeof window.google !== 'undefined' && 
+           typeof window.google?.maps?.importLibrary === 'function';
   }
 
   isScriptInjected(): boolean {

@@ -1,5 +1,4 @@
-import { GooglePlacesService } from './googlePlacesService';
-import { GooglePlaceDetailsT, GooglePlacePredictionT } from '../types';
+import { GooglePlaceDetailsT, GooglePlacePredictionT, GooglePlacesServiceT } from '../types';
 import { debounce } from '../utils/debounce';
 
 interface GooglePlacesManagerState {
@@ -15,10 +14,10 @@ class GooglePlacesManager {
     error: null,
   };
   private subscribers: Set<(state: GooglePlacesManagerState) => void> = new Set();
-  private placesService: GooglePlacesService;
+  private placesService: GooglePlacesServiceT;
   private debouncedGetPredictions: ((input: string) => void) & { cancel: () => void };
 
-  constructor(service: GooglePlacesService, debounceTime: number = 300) {
+  constructor(service: GooglePlacesServiceT, debounceTime: number = 300) {
     this.placesService = service;
     this.debouncedGetPredictions = debounce(this.fetchPredictionsInternal, debounceTime);
   }
