@@ -35,8 +35,8 @@ export interface GooglePlacePredictionT {
   interface GoogleMaps {
       maps: {
         places: {
-          AutocompleteService: new () => any;
-          PlacesService: new (div: HTMLDivElement) => any;
+          AutocompleteSuggestion: new () => any;
+          Place: new (div: HTMLDivElement) => any;
           PlacesServiceStatus: {
             OK: string;
             ZERO_RESULTS: string;

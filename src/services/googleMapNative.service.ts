@@ -17,10 +17,34 @@ class GooglePlacesNativeService implements GooglePlacesService {
     input: string,
   ): Promise<GooglePlacePredictionT[]> => {
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(
-        input,
-      )}&language=en&key=${this.API_KEY}&components=${this.countryRestrictions ? this.countryRestrictions.map(c => `country:${c}`).join('|') : ''}`,
-    );
+  `https://places.googleapis.com/v1/places:autocomplete`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Goog-Api-Key': this.API_KEY,
+      'X-Goog-FieldMask': 'places.id,places.displayName,places.formattedAddress,places.location'
+    },
+    body: JSON.stringify({
+      input,
+      languageCode: 'en',
+      ...(this.countryRestrictions && this.countryRestrictions.length > 0 && {
+        regionRestriction: {
+          countries: this.countryRestrictions
+        }
+      }),
+      locationBias: {
+        circle: {
+          center: {
+            latitude: 9.0820, // Nigeria (Abuja)
+            longitude: 8.6753
+          },
+          radius: 1000000.0 // 1000km radius to cover most of Nigeria
+        }
+      }
+    })
+  }
+);
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -34,7 +58,7 @@ class GooglePlacesNativeService implements GooglePlacesService {
 
   fetchPlaceDetails = async (placeId: string): Promise<GooglePlaceDetailsT> => {
     const response = await fetch(
-      `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=geometry,formatted_address&key=${this.API_KEY}`,
+      `https://places.googleapis.com/v1/places/${placeId}?fields=geometry,formatted_address&key=${this.API_KEY}`,
     );
 
     if (!response.ok) {

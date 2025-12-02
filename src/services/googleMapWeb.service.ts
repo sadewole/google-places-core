@@ -74,8 +74,8 @@ class GooglePlacesWebService extends Helpers implements GooglePlacesService {
 
   private initServices(): void {
     this.autocompleteService =
-      new window.google!.maps.places.AutocompleteService();
-    this.placesService = new window.google!.maps.places.PlacesService(
+      new window.google!.maps.places.AutocompleteSuggestion();
+    this.placesService = new window.google!.maps.places.Place(
       document.createElement('div')
     );
   }
