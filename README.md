@@ -152,7 +152,7 @@ const placesManager = createGooglePlacesManager(YOUR_API_KEY, {
 - No external script dependencies
 - Works in mobile environments
 
-### 🛣️ Migration from <=v1.1.0
+### 🛣️ Migration from <= v1.1.*
 ```
 import { createGooglePlacesManager } from 'google-places-core';
 

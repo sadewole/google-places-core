@@ -1,6 +1,6 @@
 {
   "name": "google-places-core",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "description": "A lightweight Google Places API logic library.",
   "main": "dist/cjs/index.js",
   "type": "module",

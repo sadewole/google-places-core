@@ -1,4 +1,8 @@
-import { GooglePlaceDetailsT, GooglePlacePredictionT, GooglePlacesServiceT } from '../types';
+import {
+  GooglePlaceDetailsT,
+  GooglePlacePredictionT,
+  GooglePlacesServiceT,
+} from '../types';
 import { debounce } from '../utils/debounce';
 
 interface GooglePlacesManagerState {
@@ -13,18 +17,24 @@ class GooglePlacesManager {
     isLoading: false,
     error: null,
   };
-  private subscribers: Set<(state: GooglePlacesManagerState) => void> = new Set();
+  private subscribers: Set<(state: GooglePlacesManagerState) => void> =
+    new Set();
   private placesService: GooglePlacesServiceT;
-  private debouncedGetPredictions: ((input: string) => void) & { cancel: () => void };
+  private debouncedGetPredictions: ((input: string) => void) & {
+    cancel: () => void;
+  };
 
   constructor(service: GooglePlacesServiceT, debounceTime: number = 300) {
     this.placesService = service;
-    this.debouncedGetPredictions = debounce(this.fetchPredictionsInternal, debounceTime);
+    this.debouncedGetPredictions = debounce(
+      this.fetchPredictionsInternal,
+      debounceTime
+    );
   }
 
   private setState(newState: Partial<GooglePlacesManagerState>) {
     this.state = { ...this.state, ...newState };
-    this.subscribers.forEach(callback => callback(this.state));
+    this.subscribers.forEach((callback) => callback(this.state));
   }
 
   private fetchPredictionsInternal = async (input: string) => {
@@ -57,7 +67,9 @@ class GooglePlacesManager {
     }
   }
 
-  public subscribe(callback: (state: GooglePlacesManagerState) => void): () => void {
+  public subscribe(
+    callback: (state: GooglePlacesManagerState) => void
+  ): () => void {
     this.subscribers.add(callback);
     callback(this.state);
     return () => {
@@ -70,8 +82,8 @@ class GooglePlacesManager {
   }
 
   public destroy() {
-      this.debouncedGetPredictions.cancel();
-      this.subscribers.clear();
+    this.debouncedGetPredictions.cancel();
+    this.subscribers.clear();
   }
 }
 

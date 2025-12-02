@@ -1,6 +1,6 @@
-import { GooglePlaceDetailsT } from "../types";
-import { Helpers } from "../utils/helpers";
-import { PlaceDetailsStrategy } from "./placeDetailsStrategy";
+import { GooglePlaceDetailsT } from '../types';
+import { Helpers } from '../utils/helpers';
+import { PlaceDetailsStrategy } from './placeDetailsStrategy';
 
 export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
   private isBrowser: boolean;
@@ -16,7 +16,9 @@ export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
     this.isBrowser = this.checkBrowserEnvironment();
   }
 
-  public async fetchPlaceDetails(placeId: string): Promise<GooglePlaceDetailsT> {
+  public async fetchPlaceDetails(
+    placeId: string
+  ): Promise<GooglePlaceDetailsT> {
     await this.ensureInitialized();
     return await this.getPlaceDetails(placeId);
   }
@@ -46,7 +48,7 @@ export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
       throw new Error('Google Maps API not available');
     }
 
-    this.placesLibrary = await window.google!.maps.importLibrary("places");
+    this.placesLibrary = await window.google!.maps.importLibrary('places');
   }
 
   // Place Details using new JavaScript SDK
@@ -59,7 +61,7 @@ export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
 
     const place = new Place({
       id: placeId,
-      requestedLanguage: 'en'
+      requestedLanguage: 'en',
     });
 
     // Fetch required fields
@@ -70,8 +72,8 @@ export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
         'location',
         'viewport',
         'addressComponents',
-        'types'
-      ]
+        'types',
+      ],
     });
 
     return this.transformPlaceDetails(place);
@@ -79,23 +81,25 @@ export class WebPlaceDetails extends Helpers implements PlaceDetailsStrategy {
 
   // Transformation methods
   private transformPlaceDetails(place: any): GooglePlaceDetailsT {
+    const viewport = JSON.stringify(place.viewport)
     return {
       formatted_address: place.formattedAddress || '',
       geometry: {
         location: {
           lat: place.location?.lat() || 0,
-          lng: place.location?.lng() || 0
+          lng: place.location?.lng() || 0,
         },
-        viewport: place.viewport
+        viewport: JSON.parse(viewport),
       },
       name: place.displayName?.text || '',
       place_id: place.id || '',
-      address_components: place.addressComponents?.map((component: any) => ({
-        long_name: component.longText,
-        short_name: component.shortText,
-        types: component.types
-      })) || [],
-      types: place.types || []
+      address_components:
+        place.addressComponents?.map((component: any) => ({
+          long_name: component.longText,
+          short_name: component.shortText,
+          types: component.types,
+        })) || [],
+      types: place.types || [],
     };
   }
 }

@@ -4,7 +4,7 @@ import {
   GooglePlacePredictionT,
 } from '../types';
 import {
-    PlaceDetailsStrategy,
+  PlaceDetailsStrategy,
   PlaceDetailsStrategyFactory,
   StrategyConfig,
 } from '../services/placeDetailsStrategy';

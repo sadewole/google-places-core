@@ -1,8 +1,8 @@
-import { GooglePlaceDetailsT } from "../types";
-import { PlaceDetailsStrategy, StrategyConfig } from "./placeDetailsStrategy";
+import { GooglePlaceDetailsT } from '../types';
+import { PlaceDetailsStrategy, StrategyConfig } from './placeDetailsStrategy';
 
 export class NativePlaceDetails implements PlaceDetailsStrategy {
-      private apiKey: string;
+  private apiKey: string;
   private config: StrategyConfig;
 
   constructor(apiKey: string, config?: StrategyConfig) {
